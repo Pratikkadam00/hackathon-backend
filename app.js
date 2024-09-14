@@ -10,6 +10,12 @@ import dotenv from "dotenv"
 
 
 const app = express();
+
+app.use(cors({
+  origin: process.env.FRONTEND_URL, 
+  credentials: true 
+}));
+
 dotenv.config();
 app.use(cors());
 app.use(helmet());
