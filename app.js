@@ -12,7 +12,7 @@ import dotenv from "dotenv"
 const app = express();
 
 app.use(cors({
-  origin: '*', 
+  origin: 'https://hackathon-frontend-two.vercel.app/', 
   credentials: true 
 }));
 
