@@ -1,6 +1,5 @@
 import nodemailer from "nodemailer";
-import dotenv from "dotenv"
-
+import dotenv from "dotenv";
 
 dotenv.config();
 
@@ -13,33 +12,31 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// Function to send email
+
 const sendEmail = async (to, subject, text, html, calendarInvite) => {
   try {
+    
     const mailOptions = {
       from: `"Event Management" <${process.env.EMAIL_USERNAME}>`,
       to,
       subject,
       text,
       html,
-      attachments: [
-        {
-          filename: 'invite.ics',
-          content: calendarInvite.toString(),
-          contentType: 'text/calendar; charset=UTF-8; method=REQUEST',
-        },
-      ],
-      alternatives: {
-        "Content-Type": "text/calendar",
-        method: "REQUEST",
-        content: Buffer.from(calendarInvite.toString()),
-        component: "VEVENT",
-        "Content-Class": "urn:content-classes:calendarmessage",
-      },
+      attachments: [],
     };
 
-    const info = await transporter.sendMail(mailOptions);
+    
+    if (calendarInvite) {
+      mailOptions.attachments.push({
+        filename: 'calendar.ics',
+        content: calendarInvite.toString(),
+        contentType: 'text/calendar; charset=utf-8; method=REQUEST',
+        contentDisposition: 'attachment',
+      });
+    }
 
+ 
+    const info = await transporter.sendMail(mailOptions);
     console.log("Email sent: %s", info.messageId);
     return info;
   } catch (error) {
@@ -48,4 +45,4 @@ const sendEmail = async (to, subject, text, html, calendarInvite) => {
   }
 };
 
-export default sendEmail
+export default sendEmail;

@@ -82,8 +82,6 @@ import { createEventInvite } from "../utils/icalGenerator.js";
   try {
     const { title, description, date, notificationsSent, attendees } = req.body;
 
-    console.log("Creating event with data:", { title, description, date, attendees });
-
     // Create the event in the database
     const event = await Event.create({
       title,
@@ -108,8 +106,9 @@ import { createEventInvite } from "../utils/icalGenerator.js";
 
         const html = getEventEmailTemplate(title, date);
 
+        
         // Create iCalendar invite
-        const calendarInvite = createEventInvite(title, date);
+        const calendarInvite = createEventInvite(date, title );
 
         for (const attendeeId of attendees) {
           try {
