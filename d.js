@@ -60,7 +60,7 @@ console.log({
 
 const message = {
   from: "pratikadam00@gmail.com",
-  to: "sidheshparab34@gmail.com",
+  to: "pratikadam00@gmail.com",
   subject: "Meeting Invitation",
   text: "Please join us for a meeting with John Doe to discuss the upcoming project. See attached ical file for details.",
   attachments: [
