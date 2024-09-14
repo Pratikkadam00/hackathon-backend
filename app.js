@@ -1,6 +1,7 @@
 import express from "express";
 import authRoutes from "./route/authRoutes.js";
 import eventRoutes from "./route/eventRoutes.js";
+import userRoute from "./route/userRoutes.js"
 import errorHandler from "./middlewares/errorHandler.js";
 import cors from "cors"
 import helmet from "helmet";
@@ -32,6 +33,7 @@ app.get("/", (req, res) => {
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/events", eventRoutes);
+app.use("/api/all-users", userRoute)
 
 
 // Error Handler

@@ -16,4 +16,5 @@ router.get("/:id", protect, getEventById);
 router.put("/:id", protect, updateEvent);
 router.delete("/:id", protect, deleteEvent);
 
+
 export default router;

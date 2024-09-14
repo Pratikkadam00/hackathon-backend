@@ -1,6 +1,6 @@
 import sendEmail from "../utils/emailService";
 
-export const sendReminder = async (req, res) => {
+ const sendReminder = async (req, res) => {
   try {
     const { email, eventName, date } = req.body;
 
@@ -15,3 +15,6 @@ export const sendReminder = async (req, res) => {
     res.status(500).json({ message: "Failed to send email reminder.", error });
   }
 };
+
+
+export default sendReminder
