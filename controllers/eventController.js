@@ -15,11 +15,10 @@ const createEvent = async (req, res) => {
       date,
       notificationsSent,
       attendees,
-      createdBy: req.user._id, 
+      createdBy: req.user._id,
     });
-    
 
-    // Immediate response to the client while sending emails in the background
+
     res.status(201).json({ message: 'Event created successfully, email reminders are being sent.', event });
 
     // Background process: Send emails and calendar invites to attendees
@@ -32,7 +31,7 @@ const createEvent = async (req, res) => {
         const html = getEventEmailTemplate(title, date);
 
 
-    
+
         const calendarInvite = createEventInvite(date, title);
 
         for (const attendeeId of attendees) {
