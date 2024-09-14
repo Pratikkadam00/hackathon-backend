@@ -30,8 +30,8 @@ const loginUser = async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
-      token: generateToken(user._id),
-      role: user.role
+      token: generateToken(user._id, user.role),
+      role: user.role,
     });
   } else {
     res.status(401).json({ message: "Invalid email or password" });

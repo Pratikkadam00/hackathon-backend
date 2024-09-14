@@ -2,7 +2,7 @@ import Event from "../models/Event.js";
 import User from "../models/User.js";
 import { createEventInvite } from "../utils/icalGenerator.js";
 import { sendEmail } from "../utils/icalGenerator.js";
-import getEventEmailTemplate from "../Template/emailTemplate.js"
+import getEventEmailTemplate from "../Template/emailTemplate.js";
 
 const createEvent = async (req, res) => {
   try {
@@ -18,19 +18,21 @@ const createEvent = async (req, res) => {
       createdBy: req.user._id,
     });
 
-
-    res.status(201).json({ message: 'Event created successfully, email reminders are being sent.', event });
+    res.status(201).json({
+      message: "Event created successfully, email reminders are being sent.",
+      event,
+    });
 
     // Background process: Send emails and calendar invites to attendees
     setImmediate(async () => {
       if (attendees && attendees.length > 0) {
         const subject = `Event Confirmation: ${title} is Scheduled!`;
 
-        const text = `Dear attendee,\n\nWe are excited to inform you that the event '${title}' has been successfully scheduled for ${new Date(date).toLocaleString()}.\n\nPlease mark your calendar and stay tuned for more updates.\n\nThank you for your participation!\n\nBest regards,\n[Your Organization's Name]`;
+        const text = `Dear attendee,\n\nWe are excited to inform you that the event '${title}' has been successfully scheduled for ${new Date(
+          date
+        ).toLocaleString()}.\n\nPlease mark your calendar and stay tuned for more updates.\n\nThank you for your participation!\n\nBest regards,\n[Your Organization's Name]`;
 
         const html = getEventEmailTemplate(title, date);
-
-
 
         const calendarInvite = createEventInvite(date, title);
 
@@ -40,31 +42,45 @@ const createEvent = async (req, res) => {
 
             if (attendee && attendee.email) {
               console.log(`Sending email to: ${attendee.email}`);
-              await sendEmail(attendee.email, subject, text, html, calendarInvite);
+              await sendEmail(
+                attendee.email,
+                subject,
+                text,
+                html,
+                calendarInvite
+              );
             } else {
-              console.warn(`Attendee with ID ${attendeeId} not found or missing email`);
+              console.warn(
+                `Attendee with ID ${attendeeId} not found or missing email`
+              );
             }
           } catch (emailError) {
-            console.error(`Failed to send email to attendee ${attendeeId}:`, emailError);
+            console.error(
+              `Failed to send email to attendee ${attendeeId}:`,
+              emailError
+            );
           }
         }
       } else {
         console.log("No attendees provided for event");
       }
     });
-
   } catch (error) {
     console.error("Error creating event:", error);
     res.status(500).json({ message: "Failed to create event.", error });
   }
 };
 
-
 const getEvents = async (req, res) => {
+  console.log("🚀 ~ getEvents ~ req:", req);
   try {
-    const events = await Event.find().populate("createdBy", "name");
+    const query = {
+      createdBy: req.user._id,
+    };
+    const events = await Event.find(query).populate("createdBy", "name");
     res.json(events);
   } catch (error) {
+    console.log("🚀 ~ getEvents ~ error:", error);
     res.status(500).json({ error: "Error fetching events" });
   }
 };
@@ -72,7 +88,10 @@ const getEvents = async (req, res) => {
 // Get Event by ID
 const getEventById = async (req, res) => {
   try {
-    const event = await Event.findById(req.params.id).populate("createdBy", "name");
+    const event = await Event.findById(req.params.id).populate(
+      "createdBy",
+      "name"
+    );
 
     if (!event) {
       return res.status(404).json({ error: "Event not found" });
@@ -96,7 +115,9 @@ const updateEvent = async (req, res) => {
     }
 
     if (event.createdBy.toString() !== req.user._id.toString()) {
-      return res.status(403).json({ error: "Unauthorized to update this event" });
+      return res
+        .status(403)
+        .json({ error: "Unauthorized to update this event" });
     }
 
     event.title = title || event.title;
@@ -120,7 +141,9 @@ const deleteEvent = async (req, res) => {
     }
 
     if (event.createdBy.toString() !== req.user._id.toString()) {
-      return res.status(403).json({ error: "Unauthorized to delete this event" });
+      return res
+        .status(403)
+        .json({ error: "Unauthorized to delete this event" });
     }
 
     await event.remove();
